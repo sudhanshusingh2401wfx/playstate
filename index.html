@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client</title>
+</head>
+
+<body>
+    <div>
+        <input type="text" id="inputField1" placeholder="Enter data 1">
+        <input type="text" id="inputField2" placeholder="Enter data 2">
+        <input type="text" id="inputField3" placeholder="Enter data 3">
+        <button onclick="saveData()">Save Data</button>
+    </div>
+    <div>
+        <button onclick="fetchData()">Fetch Data</button>
+        <pre id="output"></pre>
+    </div>
+
+    <script>
+        var data;
+        async function saveData() {
+            const inputField1 = document.getElementById('inputField1').value;
+            const inputField2 = document.getElementById('inputField2').value;
+            const inputField3 = document.getElementById('inputField3').value;
+
+            data = {
+                inputField1,
+                inputField2,
+                inputField3,
+            };
+
+            const response = await fetch('http://localhost:3000/save-data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                console.log('Data saved successfully.');
+                fetchData(); // Fetch data after saving
+            } else {
+                console.error('Failed to save data.');
+            }
+        }
+
+        async function fetchData() {
+            const response = await fetch('http://localhost:3000/get-data');
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+            } else {
+                console.error('Failed to fetch data.');
+            }
+        }
+    </script>
+</body>
+
+</html>
